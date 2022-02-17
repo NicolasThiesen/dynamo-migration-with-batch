@@ -15,7 +15,7 @@ def handle_batch(data,table_name,region):
     dynamodb = client("dynamodb", region)
     for item in range(0,len(data)):
         insert_data[table_name].append(data[item])
-        if item%25 == 0 and item!=0:
+        if item%24 == 0 and item!=0:
             response = dynamodb.batch_write_item(RequestItems=insert_data)
             print(response)
             insert_data[table_name] = []
