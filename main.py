@@ -18,19 +18,22 @@ def handle_batch(data,table_name,region):
             response = dynamodb.batch_write_item(RequestItems=insert_data)
             print(response)
             insert_data[table_name] = []
+        elif item + 1 == len(data):
+            response = dynamodb.batch_write_item(RequestItems=insert_data)
+            print(response)
         else:
             insert_data[table_name].append(data[item])
 
 @click.command()
 @click.option("--table-name", help="The table name that you want to insert the data", required=True)
-@click.option("--region", help="The region where the table are", default="us-eat-1", show_default=True)
+@click.option("--region", help="The region where the table are", default="us-east-1", show_default=True)
 @click.option("--data-file", help="The name of the file where is the data", required=True)
 def main(table_name,region,data_file):
     file = open(data_file)
     json_data = load(file)
-    data = handle_conversion(json_data, region)
+    data = handle_conversion(json_data)
     print("Starting to inserting the items")
-    handle_batch(data, table_name)
+    handle_batch(data, table_name, region)
 
 
 if __name__ == "__main__":
