@@ -14,6 +14,7 @@ def handle_batch(data,table_name,region):
     insert_data = {table_name: []}
     dynamodb = client("dynamodb", region)
     for item in range(0,len(data)):
+        insert_data[table_name].append(data[item])
         if item%25 == 0 and item!=0:
             response = dynamodb.batch_write_item(RequestItems=insert_data)
             print(response)
@@ -21,8 +22,6 @@ def handle_batch(data,table_name,region):
         elif item + 1 == len(data):
             response = dynamodb.batch_write_item(RequestItems=insert_data)
             print(response)
-        else:
-            insert_data[table_name].append(data[item])
 
 @click.command()
 @click.option("--table-name", help="The table name that you want to insert the data", required=True)
